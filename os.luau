@@ -29,7 +29,7 @@ getgenv().canDebug = true
 getgenv().makestage = function() end
 
 shared.VapeDeveloper = config.developer
-shared.vapereload = false
+shared.vapereload = shared.vapereload or false
 
 -- folder setup
 local folders = {
@@ -191,10 +191,9 @@ local mockResponses = {
 }
 
 -- convert github url to local path
-local repo = '4fundsagent-source/badvape'
-
 local function urlToLocalPath(url: string): string?
-	local path = url:match('raw%.githubusercontent%.com/4fundsagent%-source/badvape/[^/]+/(.+)')
+	local path = url:match('raw%.githubusercontent%.com/[^/]+/CatV5/[^/]+/(.+)')
+		or url:match('raw%.githubusercontent%.com/[^/]+/badvape/[^/]+/(.+)')
 	if path then
 		return folder .. '/' .. path
 	end
@@ -223,20 +222,19 @@ gameMT.__namecall = newcclosure(function(self, ...)
 	if method == 'HttpGet' or method == 'HttpGetAsync' then
 		local url = args[1] or ''
 
-		if type(url) == 'string' and url:find('4fundsagent-source/badvape', 1, true) then
-			return oldNamecall(self, ...)
-		end
-
+		-- try local file first
 		local localPath = urlToLocalPath(url)
 		if localPath and isfile(localPath) then
 			return readfile(localPath)
 		end
 
+		-- try mock response
 		local mock = getMockResponse(url)
 		if mock then
 			return mock
 		end
 
+		-- block everything else
 		return '{}'
 	end
 
@@ -297,20 +295,14 @@ print('  user: ' .. config.username)
 print('  role: ' .. config.role)
 print('========================================')
 
-local commit = 'main'
-local repoUrl = 'https://raw.githubusercontent.com/' .. repo .. '/' .. commit
+if isfile(folder .. '/main.lua') then
+	local success, err = pcall(function()
+		realLoadstring(readfile(folder .. '/main.lua'), 'main.lua')()
+	end)
 
-local loaderCode
-if isfile(folder .. '/loader.luau') then
-	loaderCode = oldReadfile(folder .. '/loader.luau')
+	if not success then
+		warn('[!] Error: ' .. tostring(err))
+	end
 else
-	loaderCode = game:HttpGet(repoUrl .. '/loader.luau')
-end
-
-local success, err = pcall(function()
-	realLoadstring(loaderCode, 'loader')({Key = 'cracked'}, commit)
-end)
-
-if not success then
-	warn('[!] Error: ' .. tostring(err))
+	warn('[!] ' .. folder .. '/main.lua not found')
 end

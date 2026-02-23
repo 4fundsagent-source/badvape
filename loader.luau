@@ -81,9 +81,9 @@ local function downloadFile(path, func)
 	if not isfile(path) then
 		createDownloader(path)
 		local suc, res = pcall(function()
-			local subbed = path:gsub('badvape/', '')
+			local subbed = path:gsub('catrewrite/', '')
 			subbed = subbed:gsub(' ', '%%20')
-			return game:HttpGet('https://raw.githubusercontent.com/4fundsagent-source/badvape/'..commit..'/'..subbed, true)
+			return game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/'..commit..'/'..subbed, true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -121,7 +121,7 @@ if writefile and not table.find({'Volt', 'Xeno'}, Executor) then
 end
 
 for _, folder in {'assets', 'games', 'guis', 'libraries', 'profiles', 'scripts'} do
-	folder = `badvape/{folder}`
+	folder = `catrewrite/{folder}`
 	if not isfolder(folder) then
 		shared.newcat = true
 		makefolder(folder)
@@ -129,23 +129,23 @@ for _, folder in {'assets', 'games', 'guis', 'libraries', 'profiles', 'scripts'}
 end
 
 if (not license.Developer and not shared.VapeDeveloper) then
-	local Updated: boolean = (commit == 'main' or (isfile('badvape/profiles/commit.txt') and readfile('badvape/profiles/commit.txt') or '') ~= commit)
+	local Updated: boolean = (commit == 'main' or (isfile('catrewrite/profiles/commit.txt') and readfile('catrewrite/profiles/commit.txt') or '') ~= commit)
 
 	if Updated then
-		wipeFolder('badvape')
-		wipeFolder('badvape/games')
-		wipeFolder('badvape/guis')
-		wipeFolder('badvape/scripts')
-		wipeFolder('badvape/libraries')
+		wipeFolder('catrewrite')
+		wipeFolder('catrewrite/games')
+		wipeFolder('catrewrite/guis')
+		wipeFolder('catrewrite/scripts')
+		wipeFolder('catrewrite/libraries')
 	end
 	
-	if #listfiles('badvape/profiles') <= 2 then
+	if #listfiles('catrewrite/profiles') <= 2 then
 		local preloaded = pcall(function()
-			local req = httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/4fundsagent-source/badvape/contents/profiles'))
+			local req = httpService:JSONDecode(game:HttpGet('https://api.github.com/repos/new-qwertyui/CatV5/contents/profiles'))
 
 			for _, v in req do
 				if v.path ~= 'profiles/commit.txt' then
-					downloadFile(`badvape/{v.path}`)
+					downloadFile(`catrewrite/{v.path}`)
 				end
 			end
 		end)
@@ -156,14 +156,14 @@ if (not license.Developer and not shared.VapeDeveloper) then
 	end
 end
 
-writefile('badvape/profiles/commit.txt', commit)
+writefile('catrewrite/profiles/commit.txt', commit)
 
 shared.VapeDeveloper = developer
 getgenv().used_init = true
 getgenv().catvapedev = developer
 getgenv().closet = closet
 getgenv().canDebug = canDebug
-getgenv().catpremium = license.Premium
+getgenv().getgenv().catpremium = license.Premium
 
 getgenv().username = license.Username or getgenv().username
 getgenv().password = license.Password or getgenv().password 
@@ -173,7 +173,7 @@ if table.find({'Velocity', 'ChocoSploit'}, Executor) then
 end
 
 local success, err = pcall(function()
-	loadstring(downloadFile('badvape/main.lua'), 'main')()
+	loadstring(downloadFile('catrewrite/main.lua'), 'main')()
 end)
 
 createDownloader('')

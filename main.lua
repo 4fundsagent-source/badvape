@@ -49,7 +49,7 @@ local function downloadFile(path, func)
 		end
 		
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/4fundsagent-source/badvape/'..readfile('badvape/profiles/commit.txt')..'/'..select(1, path:gsub('badvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/new-qwertyui/CatV5/'..readfile('catrewrite/profiles/commit.txt')..'/'..select(1, path:gsub('catrewrite/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			warn(path, res)	
@@ -66,7 +66,7 @@ end
 
 local function loadJson()
 	local suc, tab = pcall(function()
-		return httpService:JSONDecode(downloadFile('badvape/version.json'))
+		return httpService:JSONDecode(downloadFile('catrewrite/version.json'))
 	end)
 	
 	return suc and typeof(tab) == 'table' and tab.version or 'null'
@@ -97,13 +97,8 @@ local function finishLoading()
 			teleportedServers = true
 			local teleportScript = [[
 				shared.vapereload = true
-				if shared.VapeDeveloper then
-					loadstring(readfile('badvape/init.lua'), 'loader')(scriptdata)
-				else
-					loadstring(game:HttpGet('https://raw.githubusercontent.com/4fundsagent-source/badvape/'..readfile('badvape/profiles/commit.txt')..'/init.lua', true), 'loader')(scriptdata)
-				end
+				loadstring(readfile('badvape/os.luau'))()
 			]]
-			teleportScript = teleportScript:gsub('scriptdata', compileTable(shared.catdata or {}))
 			if shared.VapeCustomProfile then
 				teleportScript = 'shared.VapeCustomProfile = "'..shared.VapeCustomProfile..'"\n'..teleportScript
 			end
@@ -125,15 +120,15 @@ local function finishLoading()
 	end
 end
 
-if not isfile('badvape/profiles/gui.txt') then
-	writefile('badvape/profiles/gui.txt', 'new')
+if not isfile('catrewrite/profiles/gui.txt') then
+	writefile('catrewrite/profiles/gui.txt', 'new')
 end
-local gui = readfile('badvape/profiles/gui.txt')
+local gui = readfile('catrewrite/profiles/gui.txt')
 
-if not isfolder('badvape/assets/'..gui) then
-	makefolder('badvape/assets/'..gui)
+if not isfolder('catrewrite/assets/'..gui) then
+	makefolder('catrewrite/assets/'..gui)
 end
-vape = loadstring(downloadFile('badvape/guis/'..gui..'.lua'), 'gui')(version)
+vape = loadstring(downloadFile('catrewrite/guis/'..gui..'.lua'), 'gui')(version)
 shared.vape = vape
 repeat task.wait() until vape and typeof(vape) == 'table'
 
@@ -143,15 +138,15 @@ local alias = {
 }
 
 if not shared.VapeIndependent then
-	loadstring(downloadFile('badvape/games/universal.lua'), 'universal')()
-	loadstring(downloadFile('badvape/libraries/login.lua'), 'login')()
+	loadstring(downloadFile('catrewrite/games/universal.lua'), 'universal')()
+	loadstring(downloadFile('catrewrite/libraries/login.lua'), 'login')()
 	local placeid = alias[game.PlaceId] or game.PlaceId
-	local res = downloadFile('badvape/games/'..placeid..'.lua')
+	local res = downloadFile('catrewrite/games/'..placeid..'.lua')
 	if res and res ~= '404: Not Found' then
 		vape.Place = placeid
 		loadstring(res, tostring(placeid))(...)
 	end
-	loadstring(downloadFile('badvape/scripts/script.luau'), `script {game.PlaceId}`)(...)
+	loadstring(downloadFile('catrewrite/scripts/script.luau'), `script {game.PlaceId}`)(...)
 	finishLoading()
 else
 	vape.Init = finishLoading
