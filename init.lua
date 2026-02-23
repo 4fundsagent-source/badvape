@@ -26,10 +26,12 @@ for _, item in ipairs(tree.tree) do
 			end
 		end
 
-		local ok, content = pcall(game.HttpGet, game, base .. item.path, true)
-		if ok and content then
-			writefile(path, content)
-			count = count + 1
+		if not isfile(path) then
+			local ok, content = pcall(game.HttpGet, game, base .. item.path, true)
+			if ok and content then
+				writefile(path, content)
+				count = count + 1
+			end
 		end
 	end
 end
